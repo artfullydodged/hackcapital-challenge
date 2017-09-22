@@ -59,7 +59,7 @@ def index_into_es(data):
 
 	for d in data:
 		total += 1
-		d["time_inserted"] = datetime.now()
+		d["time_inserted"] = datetime.datetime.now()
 		print("clean.py line 59 ------ index_into_es, Inserting in ES - Event: {}; Action: {}; Time: {};".format(d.get("event").get("type"), d.get("event").get("action"), d.get("time")))
 		response = es.index(index='static', doc_type='events', body=d)
 		print("clean.py line 62 ------ index_into_es, ID: {}".format(response.get("_id")))

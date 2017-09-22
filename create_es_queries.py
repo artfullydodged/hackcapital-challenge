@@ -2,6 +2,22 @@ from addict import Dict
 import json
 
 
+# GENERATES QUERY TO CREATE A NEW INDEX WITH MAPPING
+# (INDEX MUST BE SPECIFIED IN URL)
+# (CURRENTLY CUSTOMIZED FOR CREATING AVERAGES INDEX)
+
+def create_index():
+	body = Dict()
+	body.mappings.avg.properties.key.type = "text"
+	body.mappings.avg.properties.key.fields.keyword.type = "keyword"
+	body.mappings.avg.properties.average.type = "integer"
+	body.mappings.avg.properties.count.type = "integer"
+	body.mappings.avg.properties.timestamp.type = "date"
+	# pretty = json.dumps(body, indent=4, sort_keys=True)
+	# return pretty
+	return body
+
+
 # GENERATES QUERY TO CREATE KEYWORD FIELD TO PROPERTIES IN MAPPING
 
 def add_keyword_mapping():
@@ -52,9 +68,9 @@ def q_events_date_range(params, date_min, date_max, limit=None): #takes limit op
 	body.query.bool.must = multi_terms
 	if limit != None:
 		body._source = limit
-	pretty = json.dumps(body, indent=4, sort_keys=True)
-	return pretty
-	# return body
+	# pretty = json.dumps(body, indent=4, sort_keys=True)
+	# return pretty
+	return body
 
 
 # GENERATES QUERY TO GET EVENT COUNT FOR EVERY TEAM
@@ -92,10 +108,8 @@ def	q_general_query(params, limit=None): #takes limit option as an array of fiel
 	body.query.bool.must = multi_terms
 	if limit != None:
 		body._source = limit
-	pretty = json.dumps(body, indent=4, sort_keys=True)
-	return pretty
-	# return body
-
-
+	# pretty = json.dumps(body, indent=4, sort_keys=True)
+	# return pretty
+	return body
 
 

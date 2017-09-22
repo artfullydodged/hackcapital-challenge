@@ -66,3 +66,48 @@ POST static/_search
         }
     }
 }
+
+
+
+=========== FOR CREATING NEW INDECES WITH MAPPING ===========
+
+
+PUT avglogs
+
+{
+    "mappings": {
+        "avg": {
+            "properties": {
+                "average": {
+                    "type": "integer"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "key": {
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword"
+                        }
+                    },
+                    "type": "text"
+                },
+                "timestamp": {
+                    "type": "date"
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
