@@ -1,0 +1,15 @@
+
+
+=========== FOR AGGREGATING BY TEAM ===========
+
+POST /static/events
+
+{
+    "aggs" : {
+        "repos" : {
+            "terms" : { 
+                "field" : "team.keyword" 
+            }
+        }
+    }
+}
