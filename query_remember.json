@@ -2,7 +2,7 @@
 
 =========== FOR AGGREGATING BY TEAM ===========
 
-POST /static/events
+POST static/events
 
 {
     "aggs" : {
@@ -10,6 +10,59 @@ POST /static/events
             "terms" : { 
                 "field" : "team.keyword" 
             }
+        }
+    }
+}
+
+
+=========== FOR CHANGING MAPPINGS ===========
+
+PUT static/_mapping/events
+
+{
+    "properties": {
+        "repo": {
+            "fields": {
+                "keyword": {
+                    "type": "keyword"
+                }
+            },
+            "type": "text"
+        }
+    }
+}
+
+
+=========== FOR ACTIVE REPOS BY TEAM ===========
+(Active defined by having event in the last two weeks)
+
+POST static/_search
+
+{
+    "aggs": {
+        "repos": {
+            "terms": {
+                "field": "repo.keyword"
+            }
+        }
+    },
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "team.keyword": "B"
+                    }
+                },
+                {
+                    "range": {
+                        "time": {
+                            "gte": "now-14d/d",
+                            "lte": "now/d"
+                        }
+                    }
+                }
+            ]
         }
     }
 }
