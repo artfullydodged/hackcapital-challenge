@@ -6,7 +6,7 @@ var run_type = "live"
 
 function clean(data, cb) {  
 	var spawn = require("child_process").spawn;
-	var py_script = spawn('python',["/Users/daichi/Desktop/dev/hackcapital/clean.py", run_type, data]);
+	var py_script = spawn('python',["./clean.py", run_type, data]);
 
 	py_script.stdout.on('data', function (d){
 		console.log("stdout.on.data: " + d)

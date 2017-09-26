@@ -103,6 +103,8 @@ PUT avglogs
 
 
 
+{"query": {"bool": {"must": [{"term": {"repo.keyword": "proj1"}}, {"term": {"event.type.keyword": "B"}}]}}, "_source": ["time"], "sort": {"time": {"order": "asc"}}}
+
 
 
 
