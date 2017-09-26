@@ -8,18 +8,14 @@ import datetime
 
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 
-
-# url = "https://gist.githubusercontent.com/slaterb1/0f59922d2f68b4cbbbaa088089bdc41f/raw/67eab0985cf6efec2811874eda6e83456b3c01b9/git-events.log"
-# Below intended for testing purposes as it reads from a static file to make development faster.
-# Needs to be reformatted to import data from above url for production.
-# On second thought should be source agnostic ideally, so it can be repurposed easily for injesting live data.
-
-# GET_JSON_STATIC - Imports a limited version of log events file from a local static file.
+# GET_JSON_STATIC - Imports static version of log events from a local static file.
 
 def get_json_static():
 	data = open("static-data.json")
 	c = data.readlines()
 	return c
+
+# GET_JSON_LIVE - Imports log events from start_live.js.
 
 def get_json_live():
 	data = sys.argv[2]

@@ -10,6 +10,7 @@ import dateparser
 # TIP: FIND ALL "print("analyze" then command + / to toggle comments for debugging.
 
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+index_target = "static"
 
 # RETURNS COUNT OF EVENTS GROUPED BY TEAM.
 
@@ -209,24 +210,65 @@ def freq_events_type_team_repo(index, doc_type, event_type, team, repo):
 	return average
 
 
-# total number of teams with data [=== DONE ===]
-print("Total number of teams with data:\n{}\n".format(teams_with_data("live", "events")))
-# number of active repos in each team [=== DONE ===]
-print("Number of active repos in each team:\n{}\n".format(active_repos_by_team("live", "events", "B")))
-# total number of events captured overall [=== DONE ===]
-print("Total number of events captured overall:\n{}\n".format(teams_with_data("live", "events")))
+# Total number of teams with data [=== DONE ===]
+twd = teams_with_data(index_target, "events")
+twd_count = len(twd)
+print("Total number of teams with data: {} -- {}".format(twd_count, twd))
+
+# Number of active repos in each team [=== DONE ===]
+print("\nNumber of active repos in each team: \n")
+for attr,value in twd.items():
+	arbt = active_repos_by_team(index_target, "events", attr)
+	arbt_count = len(arbt.get("active_repos"))
+	print("{} active repos in team {} -- {}".format(arbt_count, attr, arbt))
+
+# Total number of events captured overall [=== DONE ===]
+eco = teams_with_data(index_target, "events")
+eco_count = []
+for attr,value in twd.items():
+	eco_count.append(value)
+print("Total number of events captured overall: {} -- {}".format(sum(eco_count), eco))
+
 # total number of events captured per team [=== DONE ===]
 # avg time between any captured events per team [=== DONE ===]
-print("Total number of events captured per team & Avg time between any captured events per team:\n{}\n".format(freq_events_team("live", "events", "B")))
+
+print("\nAvg time between and count of events captured per team: \n")
+for attr,value in twd.items():
+	ecbt = freq_events_team(index_target, "events", attr)
+	ecbt_count = ecbt.get("count")
+	ecbt_average = ecbt.get("average")
+	print("{} events captured for team {} with avg time between: {} seconds -- {}".format(ecbt_count, attr, ecbt_average, ecbt))
+
 # frequency of event types captured overall [=== DONE ===]
-print("Frequency of event types captured overall:\n{}\n".format(freq_events_type("live", "events", "push")))
+print("\nFrequency of event types capured overall: \n")
+etco = freq_events_type(index_target, "events", "push")
+etco_count = etco.get("count")
+etco_average = etco.get("average")
+print("{} events captured overall with average frequency of {} seconds -- {}".format(etco_count, etco_average, etco))
+
 # frequency of event types captured per team [=== DONE ===]
 # avg time between same captured events per team [=== DONE ===]
-print("Frequency of event types captured per team & Avg time between same captured events per team:\n{}\n".format(freq_events_type_team("live", "events", "push", "B")))
+
+print("\nAverage time/frequency between same event types caputred by team (can do any event type, push selected arbitrarily: \n")
+for attr,value in twd.items():
+	fetpt = freq_events_type_team(index_target, "events", "push", attr) 
+	fetpt_count = fetpt.get("count")
+	fetpt_average = fetpt.get("average")
+	print("{} push events captured for team {} with average of {} seconds between each event -- {}".format(fetpt_count, attr, fetpt_average, fetpt))
+
 # frequency of event types captured per repo [=== DONE ===]
-print("Frequency of event types captured per repo:\n{}\n".format(freq_events_type_team_repo("live", "events", "push", "B", "proj1")))
+print("\nFrequency of event types captured per repo (can do any event type & team, team A and push selected arbitrarily: \n")
+etbr = freq_events_type_team_repo(index_target, "events", "push", "A", "proj1")
+etbr_count = etbr.get("count")
+etbr_average = etbr.get("average")
+print("{} push events for team A proj1 repo with average of {} seconds between each event".format(etbr_count, etbr_average))
+
 # avg time between any captured events per team [=== DONE ===]
-print("Avg time between any captured events per team:\n{}\n".format(freq_events_type_team("live", "events", "push", "B")))
+print("\nAvg time between any type of event per team: \n")
+aebt = freq_events_team(index_target, "events", "A")
+aebt_count = aebt.get("count")
+aebt_average = aebt.get("average")
+print("{} events for team A with average of {} seconds between each event".format(aebt_count, aebt_average))
 
 
 
