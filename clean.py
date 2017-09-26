@@ -21,6 +21,11 @@ def get_json_static():
 	c = data.readlines()
 	return c
 
+def get_json_live():
+	data = sys.argv[2]
+	c = data.splitlines()
+	print("data: {}".format(data))
+	return c
 
 # GENERATE_DATA_MODEL - Reformats each event and extracts relevant data to form a new JSON object.
 
@@ -42,16 +47,24 @@ def generate_data_model(log_event):
 
 # CLEAN - Brings the above two functions together to create data models for each line in file.
 
-def clean():
+def clean(run_type):
 	events = []
-	log_events = get_json_static()
-	for event in log_events:
-		data = generate_data_model(event)
-		events.append(data)
+	if run_type == "live":
+		log_events = get_json_live()
+		for event in log_events:
+			data = generate_data_model(event)
+			events.append(data)		
+	elif run_type == "static":
+		log_events = get_json_static()
+		for event in log_events:
+			data = generate_data_model(event)
+			events.append(data)
+	else:
+		print("clean.py line 60 clean ------ invalid runtype: {}".format(run_type))
 	return events
 
 
-def index_into_es(data):
+def index_into_es(index, data):
 	total = 0
 	success = 0 
 	fail = 0
@@ -61,7 +74,7 @@ def index_into_es(data):
 		total += 1
 		d["time_inserted"] = datetime.datetime.now()
 		print("clean.py line 59 ------ index_into_es, Inserting in ES - Event: {}; Action: {}; Time: {};".format(d.get("event").get("type"), d.get("event").get("action"), d.get("time")))
-		response = es.index(index='static', doc_type='events', body=d)
+		response = es.index(index=index, doc_type='events', body=d)
 		print("clean.py line 62 ------ index_into_es, ID: {}".format(response.get("_id")))
 		if response.get("result") == "created":
 			success += 1
@@ -74,7 +87,7 @@ def index_into_es(data):
 
 
 def main():
-	script_result = index_into_es(clean())
+	script_result = index_into_es(sys.argv[1], clean(sys.argv[1]))
 	print("clean.py line 60 ------ {}".format(script_result))
 	sys.stdout.flush()
 
