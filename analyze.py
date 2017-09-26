@@ -3,7 +3,7 @@ import requests
 import numpy
 import datetime
 from elasticsearch import Elasticsearch
-from addict import Dict #Fuck yes: http://blog.comperiosearch.com/blog/2014/12/17/crafting-elasticsearch-queries-python-hassle-free-way/
+from addict import Dict # http://blog.comperiosearch.com/blog/2014/12/17/crafting-elasticsearch-queries-python-hassle-free-way/
 from create_es_queries import q_teams_with_data, q_active_repos_by_team, q_doc_by_id, q_general_query, q_events_date_range
 import dateparser
 
